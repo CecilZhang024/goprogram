@@ -94,10 +94,14 @@ func Login(c *gin.Context) {
 	}
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 3600, "", "", false, true)
-	c.JSON(http.StatusOK, gin.H{
-		"status": "Login success",
-		"token":  tokenString,
-	})
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"status":  200,
+			"message": "Login Succeed",
+			"data":    map[string]string{"token": tokenString},
+		},
+	)
 
 }
 
@@ -125,4 +129,34 @@ func ResetPassword(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": "Please check your mail and reset the password",
 	})
+}
+
+func GetUserInfo(c *gin.Context) {
+	tokenstring, err := c.Cookie("Authorization")
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
+	token, err := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexcepected method", token.Header)
+		}
+		return []byte(os.Getenv("SECRET")), nil
+
+	})
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+
+		if float64(time.Now().Unix()) > claims["expr"].(float64) {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+		var user modules.Users
+		initializers.DB.First(&user, claims["sub"])
+		if user.ID == 0 {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"token": tokenstring,
+			"Type":  user.Type,
+		})
+
+	}
 }
