@@ -135,6 +135,10 @@ func GetUserInfo(c *gin.Context) {
 	tokenstring, err := c.Cookie("Authorization")
 	if err != nil {
 		c.AbortWithStatus(http.StatusUnauthorized)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "No token provide",
+		})
+		return
 	}
 	token, err := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -147,11 +151,20 @@ func GetUserInfo(c *gin.Context) {
 
 		if float64(time.Now().Unix()) > claims["expr"].(float64) {
 			c.AbortWithStatus(http.StatusUnauthorized)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invaid token",
+			})
+			return
 		}
+
 		var user modules.Users
 		initializers.DB.First(&user, claims["sub"])
 		if user.ID == 0 {
 			c.AbortWithStatus(http.StatusUnauthorized)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invaid token",
+			})
+			return
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"token": tokenstring,
