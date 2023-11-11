@@ -63,7 +63,7 @@ func Login(c *gin.Context) {
 	//var user modules.Users
 	user := modules.Users{Email: body.Email, Password: body.Password, Username: body.Username}
 	initializers.DB.First(&user, "email = ?", user.Email)
-	fmt.Printf("bodyjson", body)
+	fmt.Printf("bodyjson", user)
 
 	if user.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
