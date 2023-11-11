@@ -21,6 +21,7 @@ func PostToGPT(c *gin.Context) {
 	}
 	req.Header.Add("Content-Type", contentType)
 	req.Header.Add("Authorization", "Bearer "+gptApiKey)
+	fmt.Printf("header", req.Header)
 
 	resp, err := client.Do(req)
 	if err != nil {
