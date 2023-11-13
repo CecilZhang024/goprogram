@@ -22,7 +22,7 @@ func main() {
 	r.POST("/file/uploadfile", middleware.RequireAuth, controller.Upload)
 	r.POST("/user/resetpwd", controller.ResetPassword)
 	r.POST("/file/uploadfileS3", middleware.RequireAuth, controller.UploadtoS3)
-	r.GET("/use/info", middleware.RequireAuth, controller.GetUserInfo)
+	r.GET("/user/info", controller.GetUserInfo)
 	r.POST("/gpt/askgpt", middleware.RequireAuth, controller.PostToGPT)
 	r.Run()
 }
