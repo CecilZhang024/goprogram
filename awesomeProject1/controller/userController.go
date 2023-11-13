@@ -162,10 +162,12 @@ func GetUserInfo(c *gin.Context) {
 			return
 		}
 		var roles = [1]string{user.Type}
-		var answer = modules.Userinfo{Roles: roles, Introduction: "", Avatar: "", Name: ""}
+		//	var answer = modules.Userinfo{Roles: roles, Introduction: "", Avatar: "", Name: ""}
 		c.JSON(http.StatusOK, gin.H{
 			"code": 200,
-			"data": answer,
+			"data": map[string][1]string{
+				"roles": roles,
+			},
 		})
 
 	}
