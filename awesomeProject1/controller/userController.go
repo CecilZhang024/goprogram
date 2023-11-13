@@ -132,15 +132,10 @@ func ResetPassword(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
-	tokenstring, err := c.Cookie("Authorization")
-	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "No token provide",
-		})
-		return
-	}
-	token, err := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
+	tokenstring := c.Request.FormValue("Token")
+	fmt.Printf("tokenstring", tokenstring)
+
+	token, _ := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexcepected method", token.Header)
 		}
@@ -166,9 +161,11 @@ func GetUserInfo(c *gin.Context) {
 			})
 			return
 		}
+		var roles = [1]string{user.Type}
+		answer := modules.Userinfo{Roles: roles, Introduction: "", Avatar: "", Name: ""}
 		c.JSON(http.StatusOK, gin.H{
-			"token": tokenstring,
-			"Type":  user.Type,
+			"code": 200,
+			"data": answer,
 		})
 
 	}
