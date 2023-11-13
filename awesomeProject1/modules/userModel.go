@@ -9,3 +9,12 @@ type Users struct {
 	Password string
 	Type     string
 }
+type UserAuth struct {
+	Token string
+}
+type Userinfo struct {
+	Roles        [1]string
+	Introduction string
+	Avatar       string
+	Name         string
+}
