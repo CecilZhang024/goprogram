@@ -132,7 +132,7 @@ func ResetPassword(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
-	tokenstring := c.Request.FormValue("Token")
+	tokenstring := c.Request.FormValue("token")
 	fmt.Printf("tokenstring", tokenstring)
 
 	token, _ := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
@@ -162,7 +162,7 @@ func GetUserInfo(c *gin.Context) {
 			return
 		}
 		var roles = [1]string{user.Type}
-		answer := modules.Userinfo{Roles: roles, Introduction: "", Avatar: "", Name: ""}
+		var answer = modules.Userinfo{Roles: roles, Introduction: "", Avatar: "", Name: ""}
 		c.JSON(http.StatusOK, gin.H{
 			"code": 200,
 			"data": answer,
