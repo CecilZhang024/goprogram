@@ -24,6 +24,6 @@ func main() {
 	r.POST("/file/uploadfileS3", middleware.RequireAuth, controller.UploadtoS3)
 	r.GET("/user/info", controller.GetUserInfo)
 	r.POST("/gpt/askgpt", middleware.RequireAuth, controller.PostToGPT)
-	r.POST("/user/logout", middleware.RequireAuth, controller.Logout)
+	r.POST("/user/logout", controller.Logout)
 	r.Run()
 }
