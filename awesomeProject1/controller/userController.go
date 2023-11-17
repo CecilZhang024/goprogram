@@ -172,3 +172,14 @@ func GetUserInfo(c *gin.Context) {
 
 	}
 }
+
+func Logout(c *gin.Context) {
+	tokenstring, err := c.Cookie("Authorization")
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
+
+	c.SetCookie("token", tokenstring, -1, "/", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
+
+}
